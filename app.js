@@ -33,8 +33,9 @@ app.use((req, res, next) => {
 });
 //DB connection
 var mongoose = require('mongoose');
+var OnlineURL = "mongodb+srv://krumma147:JI3ZFzhQlBZlF8oV@demodb.i3b7ieu.mongodb.net/ToyStore";
 var URI = "mongodb://localhost:27017/ToyStore";
-mongoose.connect(URI)
+mongoose.connect(OnlineURL)
   .then(()=> console.log("Connect success!"))
   .catch((err)=> console.warn(err))
 

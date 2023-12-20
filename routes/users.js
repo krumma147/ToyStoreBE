@@ -59,6 +59,25 @@ router.get('/get/:id', async (req, res) => {
   }
 });
 
+  // Get user details by Email API
+  router.get('/find/:email', async (req, res) => {
+    const userMail = req.params.id;
+  
+    try {
+      // Find the user by ID
+      const user = await UserModel.findOne({email: userMail});
+  
+      if (!user) {
+        return res.status(404).json({ error: 'User not found.' });
+      }
+  
+      res.status(200).json(user);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
   // Edit user API
   router.post('/edit/:id', async (req, res) => {
     const userId = req.params.id;
