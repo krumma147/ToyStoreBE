@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 var UserModel = require('../models/userModel');
 
 router.post('/', async (req, res) => {
@@ -15,11 +15,11 @@ router.post('/', async (req, res) => {
         return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    req.session.user = {
-            id: user._id,
-            name: user.name,
-            role: user.role,
-    };
+    // req.session.user = {
+    //         id: user._id,
+    //         name: user.name,
+    //         role: user.role,
+    // };
   
       res.status(200).json(user);
     } catch (error) {
@@ -44,11 +44,11 @@ router.post('/admin', async (req, res) => {
     }
 
     // Set user data in the session
-    req.session.user = {
-      id: user._id,
-      name: user.name,
-      role: user.role,
-    };
+    // req.session.user = {
+    //   id: user._id,
+    //   name: user.name,
+    //   role: user.role,
+    // };
 
     res.status(200).json(user);
   } catch (error) {

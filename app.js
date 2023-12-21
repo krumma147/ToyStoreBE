@@ -1,6 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
-const session = require('express-session');
+// const session = require('express-session');
 const cors = require('cors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -17,13 +17,13 @@ var app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  session({
-    secret: '113521',
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+// app.use(
+//   session({
+//     secret: '113521',
+//     resave: false,
+//     saveUninitialized: true,
+//   })
+// );
 // Enable CORS for all routes
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
