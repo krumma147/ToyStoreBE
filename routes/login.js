@@ -1,40 +1,43 @@
-var express = require('express');
-var router = express.Router();
-// const bcrypt = require('bcrypt');
-var UserModel = require('../models/userModel');
-
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const UserModel = require('../models/userModel');
+const {authenticateJWT, checkRole} = require('../middleware/auth');
+// Login
 router.post('/', async (req, res) => {
-    const account = req.body;
-  
-    try {
-      const user = await UserModel.findOne({ email : account.email });
-    //   if (!user || !bcrypt.compareSync(password, user.password)) {
-    //     return res.status(401).json({ error: 'Invalid credentials' });
-    //   }
-    if (!user || (!user.password === account.password)) {
-        return res.status(401).json({ error: 'Invalid credentials' });
+  const { email, password } = req.body;
+
+  try {
+    const user = await UserModel.findOne({ email });
+
+    if (!user || !bcrypt.compareSync(password, user.password)) {
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // req.session.user = {
-    //         id: user._id,
-    //         name: user.name,
-    //         role: user.role,
-    // };
-  
-      res.status(200).json(user);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  });
+    // JWT
+    const token = jwt.sign(
+      { _id: user._id, email: user.email, name: user.name, role: user.role },
+      'pomelo',
+      {
+        expiresIn: '1h',
+      }
+    );
 
-router.post('/admin', async (req, res) => {
+    res.json({ token, id: user._id, username: user.name, role:user.role });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/admin', authenticateJWT, checkRole(['admin']), async (req, res) => {
   const account = req.body;
 
   try {
     const user = await UserModel.findOne({ email: account.email });
 
-    if (!user || (!user.password === account.password)) {
+    if (!user || !bcrypt.compareSync(account.password, user.password)) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
@@ -43,14 +46,16 @@ router.post('/admin', async (req, res) => {
       return res.status(403).json({ error: 'Permission denied. Only admin can log in.' });
     }
 
-    // Set user data in the session
-    // req.session.user = {
-    //   id: user._id,
-    //   name: user.name,
-    //   role: user.role,
-    // };
+    // JWT
+    const token = jwt.sign(
+      { sub: user._id, email: user.email, name: user.name, role: user.role },
+      'pomelo',
+      {
+        expiresIn: '1h', // Thời gian hết hạn của JWT
+      }
+    );
 
-    res.status(200).json(user);
+    res.json({ token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });

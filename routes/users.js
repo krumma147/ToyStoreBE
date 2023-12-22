@@ -1,8 +1,18 @@
   var express = require('express');
   var router = express.Router();
   var UserModel = require('../models/userModel');
+  const { checkRole } = require('../middleware/auth');
+
+  const jwt = require('jsonwebtoken');
+  const bcrypt = require('bcrypt');
+  //Auth check role
+  router.get('/admin', checkRole('admin'), (req, res) => {
+    res.json({ message: 'Admin route' });
+  });
+
 
   /* GET users listing. */
+  
   router.get('/', async (req, res) => {
     try {
       const users = await UserModel.find();
@@ -28,7 +38,13 @@
         return res.status(409).json({ error: 'User with this email already exists.' });
       }else{
         // Create a new user
-        const newUser = new UserModel(user);
+        // Hash the password before saving to the database
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      const newUser = new UserModel({
+        name: user.name,
+        email: user.email,
+        password: hashedPassword,
+      });
         await newUser.save();
         res.status(201).json(newUser);
       }

@@ -10,5 +10,5 @@ var oderSchema = mongoose.Schema({
     },
 })
 
-var OderModel = mongoose.model("categories", oderSchema);
+var OderModel = mongoose.model("orders", oderSchema);
 module.exports = OderModel;

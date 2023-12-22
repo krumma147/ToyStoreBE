@@ -12,18 +12,14 @@ var catRouter = require('./routes/category');
 var branchesRouter = require('./routes/branch');
 var toyRouter = require('./routes/toy');
 var loginRouter = require('./routes/login');
+var ordersRouter = require('./routes/order');
+
 
 var app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-// app.use(
-//   session({
-//     secret: '113521',
-//     resave: false,
-//     saveUninitialized: true,
-//   })
-// );
+
 // Enable CORS for all routes
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -58,6 +54,7 @@ app.use('/categories', catRouter);
 app.use('/branches', branchesRouter);
 app.use('/toys', toyRouter);
 app.use('/login', loginRouter);
+app.use('/orders', ordersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -76,7 +73,7 @@ app.use(function(err, req, res, next) {
 });
 
 // Start the server
-const PORT = 3001;
+const PORT = 3100;
 app.listen(PORT, () => {
   console.log(`Server is running on http:localhost:${PORT}`);
 });
