@@ -13,6 +13,26 @@ router.get('/', async (req, res) => {
     }
   });
 
+  // Get order details by ID API
+router.get('/get/:id', async (req, res) => {
+  const orderID = req.params.id;
+
+  try {
+    // Find the toy by ID
+    const order = await orderModel.findById(orderID);
+
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found.' });
+    }
+
+    res.status(200).json(order);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 router.post('/add', async (req, res) => {
     try {
       const order = req.body;
@@ -25,6 +45,22 @@ router.post('/add', async (req, res) => {
     await newOrder.save();
     res.status(201).json(order);
     }catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  router.delete('/delete/:id', async (req, res) => {
+    const orderID = req.params.id;
+    try {
+      const deletedOrder = await orderModel.findByIdAndDelete(orderID);
+  
+      if (!deletedOrder) {
+        return res.status(404).json({ error: 'Order not found.' });
+      }
+  
+      res.status(200).json({ message: 'Order deleted successfully.' });
+    } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
