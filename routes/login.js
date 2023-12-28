@@ -15,12 +15,11 @@ router.post('/', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // JWT
     const token = jwt.sign(
       { _id: user._id, email: user.email, name: user.name, role: user.role },
       'pomelo',
       {
-        expiresIn: '1h',
+        expiresIn: '2h',
       }
     );
 
@@ -51,7 +50,7 @@ router.post('/admin', authenticateJWT, checkRole(['admin']), async (req, res) =>
       { sub: user._id, email: user.email, name: user.name, role: user.role },
       'pomelo',
       {
-        expiresIn: '1h', // Thời gian hết hạn của JWT
+        expiresIn: '2h',
       }
     );
 
