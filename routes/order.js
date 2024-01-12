@@ -37,7 +37,7 @@ router.post('/add', async (req, res) => {
     try {
       const order = req.body;
   
-      if (!order.user || !order.toy) {
+      if (!order.user || !order.toys) {
         return res.status(400).json({ error: 'Invalid request. Missing required fields.' });
       }
 
